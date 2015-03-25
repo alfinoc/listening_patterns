@@ -1,0 +1,120 @@
+<link rel="import" href="../standard/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../standard/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../standard/core-collapse/core-collapse.html">
+
+<polymer-element name="artist-info">
+   <template>
+      <link rel="stylesheet" type="text/css" href="artist-info.css">
+      <h2 on-click="{{ toggleCollapse }}">{{ artist }}</h2>
+      <core-collapse id="collapse">
+         <div id="wrapper">
+            <div id="chart" flex>
+               <content></content>
+            </div>
+            <div class="legend">
+               <paper-radio-group id="albums" multi="true" toggle layout horizontal>
+                  <template repeat="{{ a, i in albums }}">
+                     <paper-radio-button flex class="{{ i | albumColor }}"
+                        name="{{ a }}" label="{{ a }}" toggles></paper-radio-button>
+                  </template>
+               </paper-radio-group>
+            </div>
+         </div>
+      </core-collapse>
+   </template>
+      <script>
+
+Polymer('artist-info', {
+   publish: {
+      artist: ''
+   },
+
+   observe: {
+      '$.albums.selected': 'updateAlbums'
+   },
+
+   created: function() {
+      this.lastChart = null;
+      this.albums = ['Strawberry Jam', 'Feels', 'Merriweather Post Pavilion'];
+   },
+
+   toggleCollapse: function() {
+      this.$.collapse.toggle();
+      if (this.$.collapse.opened && !this.lastChart) {
+         this.loadChart();
+      }
+   },
+
+   domReady: function() {
+      // Select all albums initially.
+      this.$.albums.selected = this.$.albums.items.map(
+         function (elt) { return elt.getAttribute('name'); }
+      );
+      //this.toggleCollapse();
+   },
+
+   loadChart: function() {
+      var test_data = stream_layers(3,128,.1).map(function(data, i) {
+         return {
+            key: 'Stream' + i,
+            values: data,
+            color: this.albumColorCode(i)
+         };
+      }.bind(this));
+
+      var container = this.querySelector('.chart_svg');
+      var chartChanger = this.updateChart.bind(this);
+      nv.addGraph({
+         generate: function() {
+            var chart = nv.models.multiBarChart();
+            chart.options({
+               showControls: false,
+               tooltips: false,
+               showXAxis: true,
+               showYAxis: true,
+               showLegend: false,
+               //getX: (function(d) { return d.label; })
+               //getY: (function(d) { return d.label; })
+            });
+
+            chart.xAxis.axisLabel('Date Played');
+            chart.yAxis.axisLabel('Play Count').tickFormat(d3.format('d'));
+            var svg = d3.select(container).datum(test_data);
+            svg.transition().duration(0).call(chart);
+            this.lastChart = chart;
+            return chart;
+         }.bind(this)
+      });
+   },
+
+   albumColor: function(i) {
+      return window.GET_COLOR(i);
+   },
+
+   albumColorCode: function(i) {
+      return window.COLOR_CODES[GET_COLOR(i)];
+   },
+
+   updateChart: function(disabled) {
+      if(this.lastChart) {
+         if (disabled)
+            this.lastChart.dispatch.changeState({'disabled': disabled});
+         this.lastChart.update();
+      }
+   },
+
+   updateAlbums: function() {
+      var selected = this.$.albums.selected;
+      if (selected && this.albums) {
+         var disabled = this.albums.map(function(a) {
+            return selected.indexOf(a) == -1;
+         });
+         console.log('s: ' + selected);
+         console.log('d: ' + disabled);
+         this.updateChart(disabled);
+      }
+   }
+});
+
+   </script>
+</polymer-element>

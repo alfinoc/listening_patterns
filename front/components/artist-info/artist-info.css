@@ -1,0 +1,110 @@
+h1, h2 {
+   font-weight: normal;
+   margin: 0px;
+}
+
+#chart ::content text {
+   font: 12px Inconsolata, sans-serif;
+   fill: #B0B0B0;
+}
+
+#chart ::content svg {
+   display: block;
+   margin: 0px;
+   padding: 0px;
+   height: 100%;
+   width: 100%;
+}
+
+#chart ::content .tick line{
+  display: none;
+}
+
+#chart ::content .nv-y path.domain {
+   stroke: #5D5D5D;
+}
+
+#chart {
+   height: 400px;
+}
+
+#wrapper {
+   width: 80%;
+   margin: auto;
+}
+
+.legend {
+   padding-left: 20px;
+   padding-right: 20px;
+}
+
+:host {
+   display: block;
+}
+
+h2 {
+   cursor: pointer;
+   padding: 20px;
+}
+
+/*
+red: #C75646;
+teal: #218693;
+purple: #C8A0D1;
+blue: #72B3CC;
+green: #8EB33B;
+yellow: #D0B03C;
+*/
+
+paper-radio-button.red::shadow #offRadio,
+paper-radio-button.red::shadow #onRadio {
+   border-color: #C75646;
+}
+paper-radio-button.red::shadow #onRadio {
+   background-color: #C75646;
+}
+
+paper-radio-button.teal::shadow #offRadio,
+paper-radio-button.teal::shadow #onRadio {
+   border-color: #218693;
+}
+paper-radio-button.teal::shadow #onRadio {
+   background-color: #218693;
+}
+
+paper-radio-button.purple::shadow #offRadio,
+paper-radio-button.purple::shadow #onRadio {
+   border-color: #C8A0D1;
+}
+paper-radio-button.purple::shadow #onRadio {
+   background-color: #C8A0D1;
+}
+
+paper-radio-button.blue::shadow #offRadio,
+paper-radio-button.blue::shadow #onRadio {
+   border-color: #72B3CC;
+}
+paper-radio-button.blue::shadow #onRadio {
+   background-color: #72B3CC;
+}
+
+paper-radio-button.green::shadow #offRadio,
+paper-radio-button.green::shadow #onRadio {
+   border-color: #8EB33B;
+}
+paper-radio-button.green::shadow #onRadio {
+   background-color: #8EB33B;
+}
+
+paper-radio-button.yellow::shadow #offRadio,
+paper-radio-button.yellow::shadow #onRadio {
+   border-color: #D0B03C;
+}
+paper-radio-button.yellow::shadow #onRadio {
+   background-color: #D0B03C;
+}
+
+
+
+
+

@@ -1,0 +1,25 @@
+body {
+   color: #F7F7F7;
+   background-color: rgb(29, 29, 29);
+   font-family: Inconsolata, sans-serif;
+}
+
+body, html, h1, h2, h3 {
+   margin: 0px;
+   padding: 0px;
+}
+
+#container {
+   width: 1000px;
+   margin: auto;
+}
+
+artist-info::shadow h2 {
+   background-color: rgb(50, 50, 50);
+}
+
+artist-info {
+   margin: 5px;
+   border-radius: 3px;
+   overflow: hidden;
+}
