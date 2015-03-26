@@ -1,6 +1,8 @@
 <link rel="import" href="../standard/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../standard/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../standard/core-collapse/core-collapse.html">
+<link rel="import" href="../standard/core-ajax/core-ajax.html">
+<link rel="import" href="../standard/paper-toast/paper-toast.html">
 
 <polymer-element name="artist-info">
    <template>
@@ -21,12 +23,19 @@
             </div>
          </div>
       </core-collapse>
+      <core-ajax id="ajax"
+         url="http://localhost:5000/counts?user={{ user }}&artist={{ artist | escape }}"
+         handleAs="json"
+         on-core-response="{{ loadChart }}"
+      ></core-ajax>
+      <paper-toast id="toast" text="error"></paper-toast>
    </template>
       <script>
 
 Polymer('artist-info', {
    publish: {
-      artist: ''
+      artist: '',
+      user: ''
    },
 
    observe: {
@@ -35,56 +44,109 @@ Polymer('artist-info', {
 
    created: function() {
       this.lastChart = null;
-      this.albums = ['Strawberry Jam', 'Feels', 'Merriweather Post Pavilion'];
+      this.albums = [];
    },
 
    toggleCollapse: function() {
       this.$.collapse.toggle();
       if (this.$.collapse.opened && !this.lastChart) {
-         this.loadChart();
+         //this.loadChart();
+         this.$.ajax.go();
       }
    },
 
    domReady: function() {
       // Select all albums initially.
-      this.$.albums.selected = this.$.albums.items.map(
-         function (elt) { return elt.getAttribute('name'); }
-      );
-      //this.toggleCollapse();
+      this.toggleCollapse();
    },
 
-   loadChart: function() {
-      var test_data = stream_layers(3,128,.1).map(function(data, i) {
-         return {
-            key: 'Stream' + i,
-            values: data,
-            color: this.albumColorCode(i)
-         };
-      }.bind(this));
+   loadChart: function(evt) {
+      // Try to parse response.
+      var histograms;
+      try {
+         histograms = evt.detail.response.histograms;
+      } catch(err) {
+         this.$.toast.show();
+      }
 
+      var domain = this.getDomain(histograms);
+
+      console.log(histograms);
+      var chartData = [];
+      var i = 0;
+      this.albums = [];
+      for (album in histograms) {
+         chartData.push({
+            key: album,
+            values: this.toChartPoints(histograms[album], i, domain),
+            color: this.albumColorCode(i++)
+         });
+         this.albums.push(album);
+      }
+      this.$.albums.selected = this.albums.map(function (val) { return val });
       var container = this.querySelector('.chart_svg');
       var chartChanger = this.updateChart.bind(this);
       nv.addGraph({
          generate: function() {
-            var chart = nv.models.multiBarChart();
-            chart.options({
-               showControls: false,
-               tooltips: false,
-               showXAxis: true,
-               showYAxis: true,
-               showLegend: false,
-               //getX: (function(d) { return d.label; })
-               //getY: (function(d) { return d.label; })
-            });
-
-            chart.xAxis.axisLabel('Date Played');
-            chart.yAxis.axisLabel('Play Count').tickFormat(d3.format('d'));
-            var svg = d3.select(container).datum(test_data);
+            var chart = this.formattedChart();
+            chart.xDomain(Object.keys(domain).sort());
+            var svg = d3.select(container).datum(chartData);
             svg.transition().duration(0).call(chart);
             this.lastChart = chart;
             return chart;
          }.bind(this)
       });
+   },
+
+   toChartPoints: function(histogram, series, domain) {
+      var result = [];
+      var i = 0;
+      var seen = {};
+      for (date in histogram) {
+         var pt = {
+            series: series,
+            x: parseInt(date),
+            y: histogram[date],
+         };
+         seen[date] = true;
+         result.push(pt);
+      }
+      for (date in domain) {
+         if (!(date in seen)) {
+            result.push({
+               series: series,
+               x: domain[date],
+               y: 0
+            });
+         }
+      }
+      result.sort(function(a, b) { return a.x - b.x; })
+      return result;
+   },
+
+   getDomain: function(histograms) {
+      var domain = {};
+      for (album in histograms)
+         for (date in histograms[album])
+            domain[date] = parseInt(date);
+      return domain;
+   },
+
+   formattedChart: function() {
+      var chart = nv.models.multiBarChart();
+      chart.options({
+         showControls: false,
+         tooltips: false,
+         showXAxis: true,
+         showYAxis: true,
+         showLegend: false,
+         stacked: true
+      });
+      chart.xAxis.axisLabel('Date Played').tickFormat(
+         function(d) { return /*d3.time.format('%b. %d')(new Date(d)) + ' ' + */ d; }
+      );
+      chart.yAxis.axisLabel('Play Count').tickFormat(d3.format('d'));
+      return chart;
    },
 
    albumColor: function(i) {
@@ -93,6 +155,10 @@ Polymer('artist-info', {
 
    albumColorCode: function(i) {
       return window.COLOR_CODES[GET_COLOR(i)];
+   },
+
+   escape: function(str) {
+      return escape(str);
    },
 
    updateChart: function(disabled) {

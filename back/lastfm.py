@@ -11,8 +11,7 @@ EPOCH = datetime(1970, 1, 1)
 class LastFMProxy:
    base_url = 'http://ws.audioscrobbler.com/2.0/?format=json&limit=1000'
 
-   def __init__(self, api_key):
-      self.key = api_key
+   def __init__(self):
       # TODO: store in DB
       self.key = 'ef2f18ff332a62f72ad46c4820bdb11b'
 
@@ -42,26 +41,22 @@ class LastFMProxy:
       report(result)
 
    def _processTracksData(self, report, data, **args):
-      # returns the timestamp for the beginning of the day containing the given
-      # timestamp 'uts'.
-      def timestamp(uts):
-         d = datetime.fromtimestamp(float(uts))
-         dt = datetime.combine(d, datetime.min.time())
-         res = (dt - EPOCH).total_seconds()
-         print uts, res - float(uts)
-         return res
-
-      tracks = json.loads(data.content)['artisttracks']['track']
       result = {}
-      for t in tracks:
-         album = t['album']['#text']
-         bucket = datetime.fromtimestamp(float(t['date']['uts'])).date().isoformat()
-         if album not in result:
-            result[album] = {}
-         if bucket not in result[album]:
-            result[album][bucket] = 1
-         else:
-            result[album][bucket] += 1
+      artistTracks = json.loads(data.content)['artisttracks']
+      utc = lambda date : int((date - datetime(1970, 1, 1)).total_seconds())
+      if 'track' in artistTracks:
+         tracks = artistTracks['track']
+         for t in tracks:
+            album = t['album']['#text']
+            bucket = utc(datetime.combine(
+                         datetime.fromtimestamp(float(t['date']['uts'])).date(),
+                         datetime.min.time()))
+            if album not in result:
+               result[album] = {}
+            if bucket not in result[album]:
+               result[album][bucket] = 1
+            else:
+               result[album][bucket] += 1
       report(result)
 
    def artistsURL(self, user):
@@ -69,7 +64,6 @@ class LastFMProxy:
       res += _toParam('method', 'user.gettopartists')
       res += _toParam('api_key', self.key) 
       res += _toParam('user', user)
-      res = 'http://localhost:8000/topartists_dummy.json'
       return res
 
    def tracksURL(self, user, artist):
@@ -78,5 +72,4 @@ class LastFMProxy:
       res += _toParam('api_key', self.key)
       res += _toParam('user', user)
       res += _toParam('artist', artist)
-      res = 'http://localhost:8000/artisttracks_dummy.json'
       return res

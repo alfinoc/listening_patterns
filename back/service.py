@@ -47,9 +47,15 @@ class Service:
       except ValueError as e:
          return BadRequest(str(e))
 
+      if self.cache != None and self.cache.contains((user)):
+         return Response(self.cache.get((user)))
+
       artists = ConditionalStorage()
       self.lastfm.artists(user, artists.set)
-      return Response(_stringify({'artists': artists.get()}, True))
+      result = _stringify({'artists': artists.get()}, True)
+      if self.cache != None:
+         self.cache.set((user), result)
+      return Response(result)
 
    def get_counts(self, request):
       try:
@@ -58,7 +64,7 @@ class Service:
          return BadRequest(str(e))
 
       # Fast path: histograms are cached locally.
-      if self.cache.contains((user, artist)):
+      if self.cache != None and self.cache.contains((user, artist)):
          return Response(self.cache.get((user, artist)))
 
       # Slow path: histograms are requested from Last.fm then cached locally.
@@ -66,19 +72,24 @@ class Service:
          histograms = ConditionalStorage()
          self.lastfm.albumHistograms(user, artist, histograms.set)
          result = _stringify({'histograms': histograms.get()}, True)
-         self.cache.set((user, artist), result)
+         if self.cache != None:
+            self.cache.set((user, artist), result)
          return Response(result)
 
    """
    dispatch requests to handlers above
    """
-   def __init__(self):
+   def __init__(self, cached=True):
       self.url_map = Map([
          Rule('/artists', endpoint='artists'),
          Rule('/counts', endpoint='counts'),
       ])
-      self.cache = RedisWrapper()
-      self.lastfm = LastFMProxy('DUMMY')
+
+      if cached:
+         self.cache = RedisWrapper()
+      else:
+         self.cache = None
+      self.lastfm = LastFMProxy()
 
    def wsgi_app(self, environ, start_response):
       request = Request(environ);
