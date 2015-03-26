@@ -62,6 +62,8 @@ Polymer('artist-info', {
    toggleCollapse: function() {
       if (!this.lastChart && this.user && this.artist) {
          this.$.ajax.go();
+      } else if (this.lastChart) {
+         this.$.collapse.toggle();
       }
    },
 
@@ -128,8 +130,8 @@ Polymer('artist-info', {
          var disabled = this.albums.map(function(a) {
             return selected.indexOf(a) == -1;
          });
-         console.log('s: ' + selected);
-         console.log('d: ' + disabled);
+         if (utils.allTrue(disabled))
+            disabled = utils.fullArray(disabled.length, false);
          this.updateChart(disabled);
       }
    }

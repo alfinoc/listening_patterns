@@ -71,6 +71,17 @@ utils.sortedValues = function(dict) {
    return Object.keys(dict).map(function(val) { return dict[val]; }).sort();
 };
 
+utils.fullArray = function(len, dflt) {
+   return Array.apply(null, Array(len)).map(function() { return dflt; });
+};
+
+utils.allTrue = function(a) {
+   for (var i = 0; i < a.length; i++)
+      if (!a[i])
+         return false;
+   return true;
+};
+
 colors = {};
 
 colors.code = {
