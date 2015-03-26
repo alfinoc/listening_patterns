@@ -1,23 +1,24 @@
 <link rel="import" href="../standard/paper-input/paper-input.html">
 <link rel="import" href="../standard/paper-spinner/paper-spinner.html">
+<link rel="import" href="../standard/core-collapse/core-collapse.html">
 
 <polymer-element name="user-info">
    <template>
       <link rel="stylesheet" type="text/css" href="user-info.css">
       <div class="banner">
-         <paper-input id="userinput" floatingLabel label="user" on-change="{{ showArtists }}" spellcheck="false"></paper-input>
+         <paper-input id="userinput" floatingLabel label="user" on-change="{{ logUser }}" spellcheck="false"></paper-input>
          <paper-spinner active?="{{ loading }}"></paper-spinner>
       </div>
       <template if="{{ artists.length == 0 && user.length != 0 && !loading }}">
          <div class="noartists">no top artists for <span>{{ user }}</span></div>
       </template>
-      <div id="artistlist" class="hide">
+      <core-collapse id="artists">
          <template repeat="{{ a in artists }}">
             <artist-info artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
                <svg class="chart_svg"></svg>
             </artist-info>
          </template>
-      </div>
+      </core-collapse>
       <core-ajax id="ajax"
          url="http://localhost:5000/artists?user={{ user }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
@@ -32,17 +33,31 @@ Polymer('user-info', {
       loading: false
    },
 
-   showArtists: function(evt) {
+   logUser: function(evt) {
       this.user = this.$.userinput.value;
    },
 
    handleArtists: function(evt) {
+      this.hideArtists();
       this.artists = evt.detail.response.artists.slice(0, 20);
+      this.async(function() {
+         this.showArtists();
+      })
    },
 
    userChanged: function() {
       if (this.user)
          this.$.ajax.go();
+   },
+
+   hideArtists: function() {
+      if (this.$.artists.opened)
+         this.$.artists.toggle();
+   },
+
+   showArtists: function() {
+      if (!this.$.artists.opened)
+         this.$.artists.toggle();
    },
 
    created: function() {
