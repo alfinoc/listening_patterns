@@ -13,9 +13,3 @@ body, html, h1, h2, h3 {
    width: 1000px;
    margin: auto;
 }
-
-artist-info {
-   margin: 5px;
-   border-radius: 3px;
-   overflow: hidden;
-}

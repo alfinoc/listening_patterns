@@ -46,7 +46,7 @@ Polymer('artist-info', {
    publish: {
       artist: '',
       user: '',
-      plays: 2,
+      plays: null,
       loading: false
    },
 
@@ -60,8 +60,7 @@ Polymer('artist-info', {
    },
 
    toggleCollapse: function() {
-      this.$.collapse.toggle();
-      if (this.$.collapse.opened && !this.lastChart) {
+      if (!this.lastChart && this.user && this.artist) {
          this.$.ajax.go();
       }
    },
@@ -89,6 +88,7 @@ Polymer('artist-info', {
          this.albums.push(album);
       }
       this.$.albums.selected = this.arrayCopy(this.albums);
+      this.$.collapse.toggle();
       nv.addGraph({
          generate: function() {
             this.lastChart = utils.formattedChart(chartData,

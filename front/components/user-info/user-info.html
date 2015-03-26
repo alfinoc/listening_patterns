@@ -1,0 +1,45 @@
+<polymer-element name="user-info">
+   <template>
+      <link rel="stylesheet" type="text/css" href="user-info.css">
+      <template repeat="{{ a in artists }}">
+         <artist-info artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
+            <svg class="chart_svg"></svg>
+         </artist-info>
+      </template>
+      <core-ajax id="ajax"
+         url="http://localhost:5000/artists?user={{ user }}"
+         handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
+      ></core-ajax>
+   </template>
+      <script>
+
+Polymer('user-info', {
+   publish: {
+      user: '',
+      artists: [],
+      loading: false
+   },
+
+   domReady: function() {
+      setTimeout(function() { this.user = 'alfino27'; }.bind(this), 1000)
+   },
+
+   handleArtists: function(evt) {
+      this.artists = evt.detail.response.artists.slice(0, 20);
+   },
+
+   userChanged: function() {
+      if (this.user)
+         this.$.ajax.go();
+   },
+
+   created: function() {
+      this.artists = [
+         { name: 'Angel Olsen', plays: 300 },
+         { name: 'Radiohead', plays: 200}
+      ];
+   }
+});
+
+   </script>
+</polymer-element>

@@ -29,8 +29,7 @@ h1, h2 {
 }
 
 #wrapper {
-   width: 80%;
-   margin: auto;
+   padding: 20px;
 }
 
 .legend {
