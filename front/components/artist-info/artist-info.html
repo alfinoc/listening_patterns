@@ -3,20 +3,31 @@
 <link rel="import" href="../standard/core-collapse/core-collapse.html">
 <link rel="import" href="../standard/core-ajax/core-ajax.html">
 <link rel="import" href="../standard/paper-toast/paper-toast.html">
+<link rel="import" href="../standard/paper-progress/paper-progress.html">
 
 <polymer-element name="artist-info">
    <template>
       <link rel="stylesheet" type="text/css" href="artist-info.css">
-      <h2 on-click="{{ toggleCollapse }}">{{ artist }}</h2>
+      <div id="banner" on-click="{{ toggleCollapse }}">
+         <h2 flex  horizontal layout>
+            <div flex>{{ artist }}</div>
+            <div class="playcount" self-center>
+               <template if="{{ plays }}">
+               <span>{{ plays }}</span> total play<template if="{{ plays > 1 }}">s</template>
+               </template>
+            </div>
+         </h2>
+         <paper-progress indeterminate?="{{ loading }}" ></paper-progress>
+      </div>
       <core-collapse id="collapse">
          <div id="wrapper">
             <div id="chart" flex>
                <content></content>
             </div>
             <div class="legend">
-               <paper-radio-group id="albums" multi="true" toggle layout horizontal>
+               <paper-radio-group id="albums" multi="true" wrap justified layout horizontal>
                   <template repeat="{{ a, i in albums }}">
-                     <paper-radio-button flex class="{{ i | albumColor }}"
+                     <paper-radio-button class="{{ i | albumColor }}"
                         name="{{ a }}" label="{{ a }}" toggles></paper-radio-button>
                   </template>
                </paper-radio-group>
@@ -25,8 +36,7 @@
       </core-collapse>
       <core-ajax id="ajax"
          url="http://localhost:5000/counts?user={{ user }}&artist={{ artist | escape }}"
-         handleAs="json"
-         on-core-response="{{ loadChart }}"
+         handleAs="json" loading="{{ loading }}" on-core-response="{{ loadChart }}"
       ></core-ajax>
       <paper-toast id="toast" text="error"></paper-toast>
    </template>
@@ -35,7 +45,9 @@
 Polymer('artist-info', {
    publish: {
       artist: '',
-      user: ''
+      user: '',
+      plays: 2,
+      loading: false
    },
 
    observe: {
@@ -50,14 +62,8 @@ Polymer('artist-info', {
    toggleCollapse: function() {
       this.$.collapse.toggle();
       if (this.$.collapse.opened && !this.lastChart) {
-         //this.loadChart();
          this.$.ajax.go();
       }
-   },
-
-   domReady: function() {
-      // Select all albums initially.
-      this.toggleCollapse();
    },
 
    loadChart: function(evt) {
@@ -82,17 +88,12 @@ Polymer('artist-info', {
          });
          this.albums.push(album);
       }
-      this.$.albums.selected = this.albums.map(function (val) { return val });
-      var container = this.querySelector('.chart_svg');
-      //var chartChanger = this.updateChart.bind(this);
+      this.$.albums.selected = this.arrayCopy(this.albums);
       nv.addGraph({
          generate: function() {
-            var chart = utils.formattedChart();
-            chart.xDomain(Object.keys(domain).sort());
-            var svg = d3.select(container).datum(chartData);
-            svg.transition().duration(0).call(chart);
-            this.lastChart = chart;
-            return chart;
+            this.lastChart = utils.formattedChart(chartData,
+                  utils.sortedValues(domain), this.querySelector('.chart_svg'));
+            return this.lastChart;
          }.bind(this)
       });
    },
@@ -115,6 +116,10 @@ Polymer('artist-info', {
             this.lastChart.dispatch.changeState({'disabled': disabled});
          this.lastChart.update();
       }
+   },
+
+   arrayCopy: function(a) {
+      return a.map(function (val) { return val });
    },
 
    updateAlbums: function() {

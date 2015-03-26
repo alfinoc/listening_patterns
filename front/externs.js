@@ -10,7 +10,7 @@ utils.histogramToChartPoints = function(histogram, series, domain) {
    for (date in histogram) {
       var pt = {
          series: series,
-         x: parseInt(date),
+         x: domain[date],
          y: histogram[date],
       };
       seen[date] = true;
@@ -34,13 +34,13 @@ utils.getDomain = function(histograms) {
    var domain = {};
    for (album in histograms)
       for (date in histograms[album])
-         domain[date] = parseInt(date);
+         domain[date] = parseInt(date) * 1000;
    return domain;
 };
 
 // Returns a NVD3 stacked multi-bar chart with formatting options for displaying
 // a histogram of play counts across time.
-utils.formattedChart = function() {
+utils.formattedChart = function(data, domain, parent) {
    var chart = nv.models.multiBarChart();
    chart.options({
       showControls: false,
@@ -51,10 +51,24 @@ utils.formattedChart = function() {
       stacked: true
    });
    chart.xAxis.axisLabel('Date Played').tickFormat(
-      function(d) { return /*d3.time.format('%b. %d')(new Date(d)) + ' ' + */ d; }
+      function(d) {
+         str = d3.time.format('%b. %e \'%y ')(new Date(d))
+         if (str.indexOf('NaN') != -1) {
+            console.log('whyyy');
+            console.log(d);
+         }
+
+         return str;
+      }
    );
    chart.yAxis.axisLabel('Play Count').tickFormat(d3.format('d'));
+   chart.xDomain(domain);
+   d3.select(parent).datum(data).transition().duration(0).call(chart);
    return chart;
+};
+
+utils.sortedValues = function(dict) {
+   return Object.keys(dict).map(function(val) { return dict[val]; }).sort();
 };
 
 colors = {};
@@ -68,7 +82,7 @@ colors.code = {
    'yellow': '#D0B03C'
 };
 
-colors.priority = ['red', 'teal', 'purple', 'blue', 'green', 'yellow'];
+colors.priority = ['red', 'teal', 'purple', 'green', 'yellow'];
 
 colors.get = function(i) {
    return colors.priority[i % colors.priority.length];

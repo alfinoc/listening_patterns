@@ -42,9 +42,39 @@ h1, h2 {
    display: block;
 }
 
-h2 {
+#banner {
    cursor: pointer;
-   padding: 20px;
+   background-color: rgb(50, 50, 50);
+   position: relative;
+   border-top: 5px solid #5D5D5D;
+}
+
+.playcount {
+   font-size: smaller;
+}
+
+.playcount span {
+   color: #9CD9F0;
+}
+
+h2 {
+   padding: 15px;
+   padding-bottom: 20px;
+}
+
+paper-progress {
+   position: absolute;
+   width: 100%;
+   bottom: 0px;
+   height: 5px;
+}
+
+paper-progress::shadow #progressContainer {
+  background-color: rgb(50, 50, 50);
+}
+
+paper-progress::shadow #activeProgress {
+  background-color: #5D5D5D;
 }
 
 /*
@@ -103,8 +133,3 @@ paper-radio-button.yellow::shadow #onRadio {
 paper-radio-button.yellow::shadow #onRadio {
    background-color: #D0B03C;
 }
-
-
-
-
-

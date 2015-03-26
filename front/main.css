@@ -14,10 +14,6 @@ body, html, h1, h2, h3 {
    margin: auto;
 }
 
-artist-info::shadow h2 {
-   background-color: rgb(50, 50, 50);
-}
-
 artist-info {
    margin: 5px;
    border-radius: 3px;

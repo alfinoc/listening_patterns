@@ -32,12 +32,12 @@ class LastFMProxy:
       apiRequest = async.get(self.tracksURL(user, artist), callback=process).send()
 
    """
-   calls 'report' with a list of album names found in the Last.fm JSON 'data'
-   response. names are sorted by play count. additional args contain response flags.
+   calls 'report' with a list of album info dicts based on the Last.fm JSON 'data'.
+   names are sorted by play count. additional args contain response flags.
    """
    def _processArtistsData(self, report, data, **args):
       artists = json.loads(data.content)['topartists']['artist']
-      result = map(lambda a : a['name'], artists)
+      result = map(lambda a : {'name': a['name'], 'plays': a['playcount'] }, artists)
       report(result)
 
    """
