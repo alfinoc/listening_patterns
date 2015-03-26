@@ -69,26 +69,25 @@ Polymer('artist-info', {
          this.$.toast.show();
       }
 
-      var domain = this.getDomain(histograms);
+      var domain = utils.getDomain(histograms);
 
-      console.log(histograms);
       var chartData = [];
       var i = 0;
       this.albums = [];
       for (album in histograms) {
          chartData.push({
             key: album,
-            values: this.toChartPoints(histograms[album], i, domain),
+            values: utils.histogramToChartPoints(histograms[album], i, domain),
             color: this.albumColorCode(i++)
          });
          this.albums.push(album);
       }
       this.$.albums.selected = this.albums.map(function (val) { return val });
       var container = this.querySelector('.chart_svg');
-      var chartChanger = this.updateChart.bind(this);
+      //var chartChanger = this.updateChart.bind(this);
       nv.addGraph({
          generate: function() {
-            var chart = this.formattedChart();
+            var chart = utils.formattedChart();
             chart.xDomain(Object.keys(domain).sort());
             var svg = d3.select(container).datum(chartData);
             svg.transition().duration(0).call(chart);
@@ -98,63 +97,12 @@ Polymer('artist-info', {
       });
    },
 
-   toChartPoints: function(histogram, series, domain) {
-      var result = [];
-      var i = 0;
-      var seen = {};
-      for (date in histogram) {
-         var pt = {
-            series: series,
-            x: parseInt(date),
-            y: histogram[date],
-         };
-         seen[date] = true;
-         result.push(pt);
-      }
-      for (date in domain) {
-         if (!(date in seen)) {
-            result.push({
-               series: series,
-               x: domain[date],
-               y: 0
-            });
-         }
-      }
-      result.sort(function(a, b) { return a.x - b.x; })
-      return result;
-   },
-
-   getDomain: function(histograms) {
-      var domain = {};
-      for (album in histograms)
-         for (date in histograms[album])
-            domain[date] = parseInt(date);
-      return domain;
-   },
-
-   formattedChart: function() {
-      var chart = nv.models.multiBarChart();
-      chart.options({
-         showControls: false,
-         tooltips: false,
-         showXAxis: true,
-         showYAxis: true,
-         showLegend: false,
-         stacked: true
-      });
-      chart.xAxis.axisLabel('Date Played').tickFormat(
-         function(d) { return /*d3.time.format('%b. %d')(new Date(d)) + ' ' + */ d; }
-      );
-      chart.yAxis.axisLabel('Play Count').tickFormat(d3.format('d'));
-      return chart;
-   },
-
    albumColor: function(i) {
-      return window.GET_COLOR(i);
+      return colors.get(i);
    },
 
    albumColorCode: function(i) {
-      return window.COLOR_CODES[GET_COLOR(i)];
+      return colors.code[colors.get(i)];
    },
 
    escape: function(str) {
