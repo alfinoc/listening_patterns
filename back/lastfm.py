@@ -36,8 +36,11 @@ class LastFMProxy:
    names are sorted by play count. additional args contain response flags.
    """
    def _processArtistsData(self, report, data, **args):
-      artists = json.loads(data.content)['topartists']['artist']
-      result = map(lambda a : {'name': a['name'], 'plays': a['playcount'] }, artists)
+      try:
+         artists = json.loads(data.content)['topartists']['artist']
+         result = map(lambda a : {'name': a['name'], 'plays': a['playcount'] }, artists)
+      except:
+         result = []
       report(result)
 
    """
@@ -46,7 +49,10 @@ class LastFMProxy:
    """
    def _processTracksData(self, report, data, **args):
       result = {}
-      artistTracks = json.loads(data.content)['artisttracks']
+      try:
+         artistTracks = json.loads(data.content)['artisttracks']
+      except:
+         report(result)
       utc = lambda date : int((date - datetime(1970, 1, 1)).total_seconds())
       if 'track' in artistTracks:
          tracks = artistTracks['track']

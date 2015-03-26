@@ -1,11 +1,23 @@
+<link rel="import" href="../standard/paper-input/paper-input.html">
+<link rel="import" href="../standard/paper-spinner/paper-spinner.html">
+
 <polymer-element name="user-info">
    <template>
       <link rel="stylesheet" type="text/css" href="user-info.css">
-      <template repeat="{{ a in artists }}">
-         <artist-info artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
-            <svg class="chart_svg"></svg>
-         </artist-info>
+      <div class="banner">
+         <paper-input id="userinput" floatingLabel label="user" on-change="{{ showArtists }}" spellcheck="false"></paper-input>
+         <paper-spinner active?="{{ loading }}"></paper-spinner>
+      </div>
+      <template if="{{ artists.length == 0 && user.length != 0 && !loading }}">
+         <div class="noartists">no top artists for <span>{{ user }}</span></div>
       </template>
+      <div id="artistlist" class="hide">
+         <template repeat="{{ a in artists }}">
+            <artist-info artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
+               <svg class="chart_svg"></svg>
+            </artist-info>
+         </template>
+      </div>
       <core-ajax id="ajax"
          url="http://localhost:5000/artists?user={{ user }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
@@ -20,8 +32,8 @@ Polymer('user-info', {
       loading: false
    },
 
-   domReady: function() {
-      this.user = 'alfino27';
+   showArtists: function(evt) {
+      this.user = this.$.userinput.value;
    },
 
    handleArtists: function(evt) {
@@ -34,10 +46,7 @@ Polymer('user-info', {
    },
 
    created: function() {
-      this.artists = [
-         { name: 'Angel Olsen', plays: 300 },
-         { name: 'Radiohead', plays: 200}
-      ];
+      this.artists = [];
    }
 });
 

@@ -3,3 +3,46 @@ artist-info {
    border-radius: 3px;
    overflow: hidden;
 }
+
+paper-input {
+   display: block;
+}
+
+.banner {
+   margin: auto;
+   width: 27%;
+   font-size: xx-large;
+   position: relative;
+}
+
+paper-input::shadow paper-input-decorator[focused] /deep/ .floated-label .label-text {
+   color: #9CD9F0;
+}
+
+paper-input::shadow paper-input-decorator /deep/ .focused-underline {
+    background-color: #9CD9F0;
+}
+
+paper-input::shadow paper-input-decorator /deep/ .unfocused-underline {
+   background-color: rgb(50, 50, 50);
+}
+
+.noartists {
+   width: 35%;
+   margin: auto;
+   text-align: center;
+   background-color: rgb(50, 50, 50);
+   font-size: large;
+   padding: 20px;
+}
+
+.noartists span {
+   color: #E09690;
+}
+
+paper-spinner {
+   position: absolute;
+   right: -48px;
+   bottom: 31px;
+}
+

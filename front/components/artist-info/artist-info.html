@@ -60,7 +60,7 @@ Polymer('artist-info', {
    },
 
    toggleCollapse: function() {
-      if (!this.lastChart && this.user && this.artist) {
+      if (!this.lastChart && !this.loading && this.user && this.artist) {
          this.$.ajax.go();
       } else if (this.lastChart) {
          this.$.collapse.toggle();
