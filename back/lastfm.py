@@ -40,6 +40,10 @@ class LastFMProxy:
       result = map(lambda a : a['name'], artists)
       report(result)
 
+   """
+   calls report with a map<album name, <date, play count>> based on artistTracks
+   Last.fm JSON 'data'. additional args contain response flags.
+   """
    def _processTracksData(self, report, data, **args):
       result = {}
       artistTracks = json.loads(data.content)['artisttracks']
@@ -59,6 +63,9 @@ class LastFMProxy:
                result[album][bucket] += 1
       report(result)
 
+   """
+   returns the URL to fetch top artist data for given 'user'.
+   """
    def artistsURL(self, user):
       res = self.base_url
       res += _toParam('method', 'user.gettopartists')
@@ -66,6 +73,9 @@ class LastFMProxy:
       res += _toParam('user', user)
       return res
 
+   """
+   returns the URL to fetch logs of all scrobbles by 'user' of tracks by 'artist'.
+   """
    def tracksURL(self, user, artist):
       res = self.base_url
       res += _toParam('method', 'user.getartisttracks')
