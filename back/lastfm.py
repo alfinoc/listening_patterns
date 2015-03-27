@@ -38,10 +38,9 @@ class LastFMProxy:
    def _processArtistsData(self, report, data, **args):
       try:
          artists = json.loads(data.content)['topartists']['artist']
-         result = map(lambda a : {'name': a['name'], 'plays': a['playcount'] }, artists)
+         report(map(lambda a : {'name': a['name'], 'plays': a['playcount'] }, artists))
       except:
-         result = []
-      report(result)
+         report([])
 
    """
    calls report with a map<album name, <date, play count>> based on artistTracks
@@ -53,6 +52,7 @@ class LastFMProxy:
          artistTracks = json.loads(data.content)['artisttracks']
       except:
          report(result)
+         return
       utc = lambda date : int((date - datetime(1970, 1, 1)).total_seconds())
       if 'track' in artistTracks:
          tracks = artistTracks['track']
