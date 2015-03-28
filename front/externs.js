@@ -84,16 +84,28 @@ utils.allTrue = function(a) {
 
 colors = {};
 
-colors.code = {
-   'red': '#C75646',
-   'teal': '#218693',
-   'purple': '#C8A0D1',
-   'blue': '#72B3CC',
-   'green': '#8EB33B',
-   'yellow': '#D0B03C'
-};
+colors.code = { Red: '#e57373',
+  Pink: '#f06292',
+  Purple: '#ba68c8',
+  Deep_Purple: '#9575cd',
+  Indigo: '#7986cb',
+  Blue: '#64b5f6',
+  Light_Blue: '#4fc3f7',
+  Cyan: '#4dd0e1',
+  Teal: '#4db6ac',
+  Green: '#81c784',
+  Light_Green: '#aed581',
+  Lime: '#dce775',
+  Yellow: '#fff176',
+  Amber: '#ffd54f',
+  Orange: '#ffb74d',
+  Deep_Orange: '#ff8a65',
+  Brown: '#a1887f',
+  Grey: '#e0e0e0',
+  Blue_Grey: '#90a4ae' }
 
-colors.priority = ['red', 'teal', 'purple', 'green', 'yellow'];
+colors.priority = ['Blue', 'Green', 'Red' , 'Purple', 'Orange', 'Cyan', 'Yellow', 'Indigo', 'Pink', 'Blue_Grey', 'Brown', 'Light_Green']
+//colors.priority = ['red', 'teal', 'purple', 'green', 'yellow'];
 
 colors.get = function(i) {
    return colors.priority[i % colors.priority.length];

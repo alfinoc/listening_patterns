@@ -70,7 +70,8 @@ def crunchBuckets(histograms):
 
    offset = int(min(totalBuckets))
    def adjust(interval, time):
-      return (int(time) - offset) / (interval * SECS_PER_DAY)
+      step = (int(time) - offset) / (interval * SECS_PER_DAY)
+      return offset + step * interval * SECS_PER_DAY
 
    def numBuckets(interval):
       return len(set(map(partial(adjust, interval), totalBuckets)))

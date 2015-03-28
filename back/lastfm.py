@@ -111,6 +111,7 @@ class LastFMProxy:
    calls report with a list of release-groups in MB JSON 'data'.
    """
    def _processAlbumsData(self, report, data, **args):
+      print data.content
       try:
          albums = json.loads(data.content)['release-groups']
          albums = filter(lambda a : a['primary-type'] in ALBUM_TYPES, albums)
