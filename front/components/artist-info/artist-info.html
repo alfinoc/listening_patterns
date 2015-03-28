@@ -35,7 +35,7 @@
          </div>
       </core-collapse>
       <core-ajax id="ajax"
-         url="http://localhost:5000/counts?user={{ user }}&artist={{ artist | escape }}"
+         url="http://localhost:5000/counts?user={{ user }}&artist={{ artist | escape }}&mbid={{ mbid }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ loadChart }}"
       ></core-ajax>
       <paper-toast id="toast" text="error"></paper-toast>
@@ -45,6 +45,7 @@
 Polymer('artist-info', {
    publish: {
       artist: '',
+      mbid: '',
       user: '',
       plays: null,
       loading: false

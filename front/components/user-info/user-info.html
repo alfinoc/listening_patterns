@@ -14,7 +14,7 @@
       </template>
       <core-collapse id="artists">
          <template repeat="{{ a in artists }}">
-            <artist-info artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
+            <artist-info mbid="{{ a.mbid }}" artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
                <svg class="chart_svg"></svg>
             </artist-info>
          </template>
