@@ -31,11 +31,10 @@ def _isKnown(knownAlbums):
 def sanitizeHistograms(knownAlbums, histograms):
    correctSubstrings(histograms)
    res = gatherUnknown(knownAlbums, histograms)
-   crunchBuckets(histograms)
+   crunchBuckets(res)
    return res
 
 def gatherUnknown(knownAlbums, histograms):
-   print 'known', knownAlbums
    if len(knownAlbums) == 0:
       return histograms
    clean = {}
@@ -87,7 +86,7 @@ def crunchBuckets(histograms):
       hist = histograms[album]
       adjHist = {}
       for time in hist:
-         adjTime = adjust(time, interval)
+         adjTime = adjust(interval, time)
          if adjTime not in adjHist:
             adjHist[adjTime] = 0
          adjHist[adjTime] += hist[time]
