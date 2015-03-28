@@ -1,3 +1,8 @@
+from functools import partial
+
+MAX_BUCKETS = 70
+SECS_PER_DAY = 60 * 60 * 24
+
 def _mergeDicts(dict, accumulator):
    for key in dict:
       if not key in accumulator:
@@ -11,7 +16,6 @@ def _dictSum(d1, d2):
    return res
 
 def _isKnown(knownAlbums):
-   print 'in isKnown', knownAlbums
    def nonEmpty(album):
       return len(album.strip()) != 0
 
@@ -27,9 +31,11 @@ def _isKnown(knownAlbums):
 def sanitizeHistograms(knownAlbums, histograms):
    correctSubstrings(histograms)
    res = gatherUnknown(knownAlbums, histograms)
+   crunchBuckets(histograms)
    return res
 
 def gatherUnknown(knownAlbums, histograms):
+   print 'known', knownAlbums
    if len(knownAlbums) == 0:
       return histograms
    clean = {}
@@ -54,5 +60,35 @@ def correctSubstrings(histograms):
             _mergeDicts(histograms[album], histograms[other])
             del histograms[album]
 
-def crunchBuckets():
-   pass
+def crunchBuckets(histograms):
+   totalBuckets = set()
+   for album in histograms:
+      for time in histograms[album]:
+         totalBuckets.add(time)
+
+   if len(totalBuckets) <= MAX_BUCKETS:
+      return  # No work to be done.
+
+   offset = int(min(totalBuckets))
+   def adjust(interval, time):
+      return (int(time) - offset) / (interval * SECS_PER_DAY)
+
+   def numBuckets(interval):
+      return len(set(map(partial(adjust, interval), totalBuckets)))
+
+   interval = 1
+   while numBuckets(interval) > MAX_BUCKETS:
+      interval += 1
+      if interval > 1000:
+         # TODO: better guard here, just in case.
+         break
+
+   for album in histograms:
+      hist = histograms[album]
+      adjHist = {}
+      for time in hist:
+         adjTime = adjust(time, interval)
+         if adjTime not in adjHist:
+            adjHist[adjTime] = 0
+         adjHist[adjTime] += hist[time]
+      histograms[album] = adjHist

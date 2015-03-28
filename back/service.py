@@ -72,7 +72,7 @@ class Service:
          mbid = None
       cacheKey = (user, artist, mbid)
 
-      # Fast path: histograms are cached locally.
+      # Fast path: histograms are already cached.
       if self.cache != None and self.cache.contains(cacheKey):
          return Response(self.cache.get(cacheKey))
 
@@ -89,7 +89,6 @@ class Service:
             albums.set([])
             eps.set([])
          knownAlbums = set(albums.get() + eps.get())
-         print 'known as reported', knownAlbums
          result = _stringify({
             'histograms': sanitizeHistograms(knownAlbums, histograms.get()),
             'unclean': histograms.get()

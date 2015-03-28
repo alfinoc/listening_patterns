@@ -111,13 +111,13 @@ class LastFMProxy:
    calls report with a list of release-groups in MB JSON 'data'.
    """
    def _processAlbumsData(self, report, data, **args):
-      #try:
-      albums = json.loads(data.content)['release-groups']
-      albums = filter(lambda a : a['primary-type'] in ALBUM_TYPES, albums)
-      albums = filter(lambda a : len(a['secondary-types']) == 0, albums)
-      report(map(lambda a : a['title'], albums))
-      #except:
-      #   report([])
+      try:
+         albums = json.loads(data.content)['release-groups']
+         albums = filter(lambda a : a['primary-type'] in ALBUM_TYPES, albums)
+         albums = filter(lambda a : len(a['secondary-types']) == 0, albums)
+         report(map(lambda a : a['title'], albums))
+      except:
+         report([])
 
    """
    returns the URL to fetch top artist data for given 'user'.
@@ -144,7 +144,11 @@ class LastFMProxy:
          'artist': artist
       })
 
-   def albumsURL(self, mbid, type, maxAlbums=5):
+   """
+   returns the URL to fetch lists of albums of a given 'type' (Album or EP) for the
+   artists with the given MB id.
+   """
+   def albumsURL(self, mbid, type):
       return self.mb_base_url + _paramSuffix({
          'artist': mbid,
          'type': type,
