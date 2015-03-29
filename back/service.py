@@ -90,8 +90,7 @@ class Service:
             eps.set([])
          knownAlbums = set(albums.get() + eps.get())
          result = _stringify({
-            'histograms': sanitizeHistograms(knownAlbums, histograms.get()),
-            'unclean': histograms.get()
+            'histograms': sanitizeHistograms(knownAlbums, histograms.get())
          }, True)
          if self.cache != None:
             self.cache.set(cacheKey, result)

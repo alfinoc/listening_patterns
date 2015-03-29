@@ -1,5 +1,5 @@
 <link rel="import" href="../standard/paper-input/paper-input.html">
-<link rel="import" href="../standard/paper-spinner/paper-spinner.html">
+<link rel="import" href="../standard/paper-progress/paper-progress.html">
 <link rel="import" href="../standard/core-collapse/core-collapse.html">
 
 <polymer-element name="user-info">
@@ -7,7 +7,6 @@
       <link rel="stylesheet" type="text/css" href="user-info.css">
       <div class="banner">
          <paper-input id="userinput" floatingLabel label="user" on-change="{{ logUser }}" spellcheck="false"></paper-input>
-         <paper-spinner active?="{{ loading }}"></paper-spinner>
       </div>
       <template if="{{ artists.length == 0 && user.length != 0 && !loading }}">
          <div class="noartists">no top artists for <span>{{ user }}</span></div>
@@ -19,6 +18,7 @@
             </artist-info>
          </template>
       </core-collapse>
+      <paper-progress indeterminate?="{{ loading }}"></paper-progress>
       <core-ajax id="ajax" url="{{ host }}/artists?user={{ user }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
       ></core-ajax>

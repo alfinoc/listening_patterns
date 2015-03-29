@@ -40,9 +40,17 @@ paper-input::shadow paper-input-decorator /deep/ .unfocused-underline {
    color: #E09690;
 }
 
-paper-spinner {
+paper-progress {
    position: absolute;
-   right: -48px;
-   bottom: 31px;
+   width: 100%;
+   top: 0px;
+   height: 5px;
 }
 
+paper-progress::shadow #progressContainer {
+  background-color: rgb(29, 29, 29);
+}
+
+paper-progress::shadow #activeProgress {
+  background-color: #F7F7F7;
+}
