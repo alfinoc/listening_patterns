@@ -20,6 +20,8 @@ def _isKnown(knownAlbums):
       return len(album.strip()) != 0
 
    def isKnown(album):
+      if knownAlbums == None:
+         return True
       for k in knownAlbums:
          if album in k or k in album:
             return True
@@ -37,11 +39,14 @@ def sanitizeHistograms(knownAlbums, histograms):
    return clean
 
 def gatherUnknown(knownAlbums, histograms):
+   # When we lack any album info, ignore known album filters.
+   # TODO: This is clumsy. Could use a better state -> check set system.
    if len(knownAlbums) == 0:
-      return histograms, {}
+      checker = _isKnown(None)
+   else:
+      checker = _isKnown(map(lambda a : a.lower(), knownAlbums))
    clean = {}
    unknown = {}
-   checker = _isKnown(map(lambda a : a.lower(), knownAlbums))
    for album in histograms:
       if checker(album.lower()):
          clean[album] = histograms[album]
@@ -76,13 +81,13 @@ def crunchBuckets(histograms):
    def numBuckets(interval):
       return len(set(map(partial(adjust, interval), totalBuckets)))
 
-   interval = 1
-   while numBuckets(interval) > MAX_BUCKETS:
-      interval += 1
-      if interval > 1000:
-         # TODO: better guard here, just in case.
-         break
-
+   def incrUntilLimit(limit=1000):
+      interval = 1
+      while numBuckets(interval) > MAX_BUCKETS and interval < limit:
+         interval += 1
+      return interval
+   
+   interval = incrUntilLimit()
    for album in histograms:
       hist = histograms[album]
       adjHist = {}
