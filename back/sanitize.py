@@ -29,10 +29,12 @@ def _isKnown(knownAlbums):
    return lambda album : all([ fn(album) for fn in checks ])
 
 def sanitizeHistograms(knownAlbums, histograms):
-   correctSubstrings(histograms)
-   res = gatherUnknown(knownAlbums, histograms)
-   crunchBuckets(res)
-   return res
+   clean, unknown = gatherUnknown(knownAlbums, histograms)
+   correctSubstrings(clean)
+   if len(unknown) != 0:
+      clean['Other'] = unknown
+   crunchBuckets(clean)
+   return clean
 
 def gatherUnknown(knownAlbums, histograms):
    if len(knownAlbums) == 0:
@@ -45,9 +47,7 @@ def gatherUnknown(knownAlbums, histograms):
          clean[album] = histograms[album]
       else:
          _mergeDicts(histograms[album], unknown)
-   if len(unknown) != 0:
-      clean['Other'] = unknown
-   return clean
+   return clean, unknown
 
 def correctSubstrings(histograms):
    def substr(a, b):
@@ -55,9 +55,9 @@ def correctSubstrings(histograms):
    albums = histograms.keys()
    for album in albums:
       for other in albums:
-         if (album in histograms and substr(album, other)):
-            _mergeDicts(histograms[album], histograms[other])
-            del histograms[album]
+         if (other in histograms and substr(album, other)):
+            _mergeDicts(histograms[other], histograms[album])
+            del histograms[other]
 
 def crunchBuckets(histograms):
    totalBuckets = set()

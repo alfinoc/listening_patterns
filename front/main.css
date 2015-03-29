@@ -13,3 +13,7 @@ body, html, h1, h2, h3 {
    width: 1000px;
    margin: auto;
 }
+
+* /deep/ rect {
+   stroke: transparent !important;
+}

@@ -1,5 +1,7 @@
 utils = {};
 
+utils.host = 'http://localhost:5000'
+
 // Returns a list of points {series, x, y} where series is uniformly the provided
 // value and each (x, y) corresponds to a histogram entry (date, count). If any
 // dates in histogram are not in domain, they are added as 0 counts.
@@ -48,8 +50,9 @@ utils.formattedChart = function(data, domain, parent) {
       showXAxis: true,
       showYAxis: true,
       showLegend: false,
-      stacked: true
+      stacked: true,
    });
+   chart.groupSpacing(0.2);
    chart.xAxis.axisLabel('Date Played').tickFormat(
       function(d) {
          str = d3.time.format('%b. %e \'%y ')(new Date(d))
@@ -84,27 +87,29 @@ utils.allTrue = function(a) {
 
 colors = {};
 
-colors.code = { Red: '#e57373',
-  Pink: '#f06292',
-  Purple: '#ba68c8',
-  Deep_Purple: '#9575cd',
-  Indigo: '#7986cb',
-  Blue: '#64b5f6',
-  Light_Blue: '#4fc3f7',
-  Cyan: '#4dd0e1',
-  Teal: '#4db6ac',
-  Green: '#81c784',
-  Light_Green: '#aed581',
-  Lime: '#dce775',
-  Yellow: '#fff176',
-  Amber: '#ffd54f',
-  Orange: '#ffb74d',
-  Deep_Orange: '#ff8a65',
-  Brown: '#a1887f',
-  Grey: '#e0e0e0',
-  Blue_Grey: '#90a4ae' }
+colors.code = {
+   Red: '#e57373',
+   Pink: '#f06292',
+   Purple: '#ba68c8',
+   Deep_Purple: '#9575cd',
+   Indigo: '#7986cb',
+   Blue: '#64b5f6',
+   Light_Blue: '#4fc3f7',
+   Cyan: '#4dd0e1',
+   Teal: '#4db6ac',
+   Green: '#81c784',
+   Light_Green: '#aed581',
+   Lime: '#dce775',
+   Yellow: '#fff176',
+   Amber: '#ffd54f',
+   Orange: '#ffb74d',
+   Deep_Orange: '#ff8a65',
+   Brown: '#a1887f',
+   Grey: '#e0e0e0',
+   Blue_Grey: '#90a4ae'
+}
 
-colors.priority = ['Blue', 'Green', 'Red' , 'Purple', 'Orange', 'Cyan', 'Yellow', 'Indigo', 'Pink', 'Blue_Grey', 'Brown', 'Light_Green']
+colors.priority = ['Blue', 'Red', 'Purple', 'Green', 'Orange', 'Yellow', 'Pink', 'Cyan', 'Brown', 'Indigo', 'Blue_Grey', 'Light_Green']
 //colors.priority = ['red', 'teal', 'purple', 'green', 'yellow'];
 
 colors.get = function(i) {

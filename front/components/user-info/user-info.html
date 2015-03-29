@@ -19,8 +19,7 @@
             </artist-info>
          </template>
       </core-collapse>
-      <core-ajax id="ajax"
-         url="http://localhost:5000/artists?user={{ user }}"
+      <core-ajax id="ajax" url="{{ host }}/artists?user={{ user }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
       ></core-ajax>
    </template>
@@ -31,6 +30,10 @@ Polymer('user-info', {
       user: '',
       artists: [],
       loading: false
+   },
+
+   domReady: function() {
+      this.host = utils.host;
    },
 
    logUser: function(evt) {

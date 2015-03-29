@@ -76,59 +76,154 @@ paper-progress::shadow #activeProgress {
   background-color: #5D5D5D;
 }
 
-/*
-red: #C75646;
-teal: #218693;
-purple: #C8A0D1;
-blue: #72B3CC;
-green: #8EB33B;
-yellow: #D0B03C;
-*/
-
-paper-radio-button.red::shadow #offRadio,
-paper-radio-button.red::shadow #onRadio {
-   border-color: #C75646;
+paper-radio-button.Pink::shadow #offRadio,
+paper-radio-button.Pink::shadow #onRadio {
+   border-color: #f06292;
 }
-paper-radio-button.red::shadow #onRadio {
-   background-color: #C75646;
+paper-radio-button.Pink::shadow #onRadio {
+   background-color: #f06292;
 }
 
-paper-radio-button.teal::shadow #offRadio,
-paper-radio-button.teal::shadow #onRadio {
-   border-color: #218693;
+paper-radio-button.Deep_Purple::shadow #offRadio,
+paper-radio-button.Deep_Purple::shadow #onRadio {
+   border-color: #9575cd;
 }
-paper-radio-button.teal::shadow #onRadio {
-   background-color: #218693;
-}
-
-paper-radio-button.purple::shadow #offRadio,
-paper-radio-button.purple::shadow #onRadio {
-   border-color: #C8A0D1;
-}
-paper-radio-button.purple::shadow #onRadio {
-   background-color: #C8A0D1;
+paper-radio-button.Deep_Purple::shadow #onRadio {
+   background-color: #9575cd;
 }
 
-paper-radio-button.blue::shadow #offRadio,
-paper-radio-button.blue::shadow #onRadio {
-   border-color: #72B3CC;
+paper-radio-button.Indigo::shadow #offRadio,
+paper-radio-button.Indigo::shadow #onRadio {
+   border-color: #7986cb;
 }
-paper-radio-button.blue::shadow #onRadio {
-   background-color: #72B3CC;
-}
-
-paper-radio-button.green::shadow #offRadio,
-paper-radio-button.green::shadow #onRadio {
-   border-color: #8EB33B;
-}
-paper-radio-button.green::shadow #onRadio {
-   background-color: #8EB33B;
+paper-radio-button.Indigo::shadow #onRadio {
+   background-color: #7986cb;
 }
 
-paper-radio-button.yellow::shadow #offRadio,
-paper-radio-button.yellow::shadow #onRadio {
-   border-color: #D0B03C;
+paper-radio-button.Teal::shadow #offRadio,
+paper-radio-button.Teal::shadow #onRadio {
+   border-color: #4db6ac;
 }
-paper-radio-button.yellow::shadow #onRadio {
-   background-color: #D0B03C;
+paper-radio-button.Teal::shadow #onRadio {
+   background-color: #4db6ac;
+}
+
+paper-radio-button.Brown::shadow #offRadio,
+paper-radio-button.Brown::shadow #onRadio {
+   border-color: #a1887f;
+}
+paper-radio-button.Brown::shadow #onRadio {
+   background-color: #a1887f;
+}
+
+paper-radio-button.Purple::shadow #offRadio,
+paper-radio-button.Purple::shadow #onRadio {
+   border-color: #ba68c8;
+}
+paper-radio-button.Purple::shadow #onRadio {
+   background-color: #ba68c8;
+}
+
+paper-radio-button.Light_Green::shadow #offRadio,
+paper-radio-button.Light_Green::shadow #onRadio {
+   border-color: #aed581;
+}
+paper-radio-button.Light_Green::shadow #onRadio {
+   background-color: #aed581;
+}
+
+paper-radio-button.Grey::shadow #offRadio,
+paper-radio-button.Grey::shadow #onRadio {
+   border-color: #e0e0e0;
+}
+paper-radio-button.Grey::shadow #onRadio {
+   background-color: #e0e0e0;
+}
+
+paper-radio-button.Yellow::shadow #offRadio,
+paper-radio-button.Yellow::shadow #onRadio {
+   border-color: #fff176;
+}
+paper-radio-button.Yellow::shadow #onRadio {
+   background-color: #fff176;
+}
+
+paper-radio-button.Blue_Grey::shadow #offRadio,
+paper-radio-button.Blue_Grey::shadow #onRadio {
+   border-color: #90a4ae;
+}
+paper-radio-button.Blue_Grey::shadow #onRadio {
+   background-color: #90a4ae;
+}
+
+paper-radio-button.Light_Blue::shadow #offRadio,
+paper-radio-button.Light_Blue::shadow #onRadio {
+   border-color: #4fc3f7;
+}
+paper-radio-button.Light_Blue::shadow #onRadio {
+   background-color: #4fc3f7;
+}
+
+paper-radio-button.Deep_Orange::shadow #offRadio,
+paper-radio-button.Deep_Orange::shadow #onRadio {
+   border-color: #ff8a65;
+}
+paper-radio-button.Deep_Orange::shadow #onRadio {
+   background-color: #ff8a65;
+}
+
+paper-radio-button.Green::shadow #offRadio,
+paper-radio-button.Green::shadow #onRadio {
+   border-color: #81c784;
+}
+paper-radio-button.Green::shadow #onRadio {
+   background-color: #81c784;
+}
+
+paper-radio-button.Blue::shadow #offRadio,
+paper-radio-button.Blue::shadow #onRadio {
+   border-color: #64b5f6;
+}
+paper-radio-button.Blue::shadow #onRadio {
+   background-color: #64b5f6;
+}
+
+paper-radio-button.Orange::shadow #offRadio,
+paper-radio-button.Orange::shadow #onRadio {
+   border-color: #ffb74d;
+}
+paper-radio-button.Orange::shadow #onRadio {
+   background-color: #ffb74d;
+}
+
+paper-radio-button.Cyan::shadow #offRadio,
+paper-radio-button.Cyan::shadow #onRadio {
+   border-color: #4dd0e1;
+}
+paper-radio-button.Cyan::shadow #onRadio {
+   background-color: #4dd0e1;
+}
+
+paper-radio-button.Amber::shadow #offRadio,
+paper-radio-button.Amber::shadow #onRadio {
+   border-color: #ffd54f;
+}
+paper-radio-button.Amber::shadow #onRadio {
+   background-color: #ffd54f;
+}
+
+paper-radio-button.Red::shadow #offRadio,
+paper-radio-button.Red::shadow #onRadio {
+   border-color: #e57373;
+}
+paper-radio-button.Red::shadow #onRadio {
+   background-color: #e57373;
+}
+
+paper-radio-button.Lime::shadow #offRadio,
+paper-radio-button.Lime::shadow #onRadio {
+   border-color: #dce775;
+}
+paper-radio-button.Lime::shadow #onRadio {
+   background-color: #dce775;
 }
