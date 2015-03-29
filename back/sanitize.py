@@ -38,7 +38,7 @@ def sanitizeHistograms(knownAlbums, histograms):
 
 def gatherUnknown(knownAlbums, histograms):
    if len(knownAlbums) == 0:
-      return histograms
+      return histograms, {}
    clean = {}
    unknown = {}
    checker = _isKnown(map(lambda a : a.lower(), knownAlbums))
