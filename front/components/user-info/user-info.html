@@ -1,12 +1,18 @@
 <link rel="import" href="../standard/paper-input/paper-input.html">
 <link rel="import" href="../standard/paper-progress/paper-progress.html">
 <link rel="import" href="../standard/core-collapse/core-collapse.html">
+<link rel="import" href="../standard/paper-tabs/paper-tabs.html">
+
 
 <polymer-element name="user-info">
    <template>
       <link rel="stylesheet" type="text/css" href="user-info.css">
       <div class="banner">
          <paper-input id="userinput" floatingLabel label="user" on-change="{{ logUser }}" spellcheck="false"></paper-input>
+         <paper-tabs noink selected="0" id="typeselector" on-core-activate="{{ typeSelectionChanged }}">
+            <paper-tab>top artists</paper-tab>
+            <paper-tab>recent artists</paper-tab>
+         </paper-tabs>
       </div>
       <template if="{{ artists.length == 0 && user.length != 0 && !loading }}">
          <div class="noartists">no top artists for <span>{{ user }}</span></div>
@@ -29,7 +35,8 @@ Polymer('user-info', {
    publish: {
       user: '',
       artists: [],
-      loading: false
+      loading: false,
+      type: 'top'  // top | recent
    },
 
    domReady: function() {
@@ -46,6 +53,13 @@ Polymer('user-info', {
       this.async(function() {
          this.showArtists();
       })
+   },
+
+   typeSelectionChanged: function() {
+      var old = this.type;
+      this.type = this.$.typeselector.selected ? 'top' : 'recent';
+      if (old != this.type);
+         this.userChanged();
    },
 
    userChanged: function() {

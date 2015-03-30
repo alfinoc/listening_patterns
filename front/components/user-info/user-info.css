@@ -19,12 +19,17 @@ paper-input::shadow paper-input-decorator[focused] /deep/ .floated-label .label-
    color: #9CD9F0;
 }
 
-paper-input::shadow paper-input-decorator /deep/ .focused-underline {
+paper-input::shadow paper-input-decorator /deep/ .focused-underline,
+paper-tabs::shadow #selectionBar {
     background-color: #9CD9F0;
 }
 
 paper-input::shadow paper-input-decorator /deep/ .unfocused-underline {
    background-color: rgb(50, 50, 50);
+}
+
+paper-tabs {
+  margin-bottom: 20px;
 }
 
 .noartists {
@@ -44,6 +49,7 @@ paper-progress {
    position: absolute;
    width: 100%;
    top: 0px;
+   left: 0px;
    height: 5px;
 }
 

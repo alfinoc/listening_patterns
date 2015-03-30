@@ -2,9 +2,11 @@ import json
 import grequests as async
 from functools import partial
 from datetime import datetime
+from unidecode import unidecode
 
 def _paramSuffix(params):
-      return '&'.join(map(lambda key : '{0}={1}'.format(key, params[key]), params))
+   return unidecode('&'.join(map(lambda key : u'{0}={1}'.format(
+      key, params[key]), params)))
 
 def _mergeDicts(dict, accumulator):
    for key in dict:
@@ -57,6 +59,7 @@ class LastFMProxy:
    """
    def albumHistograms(self, user, artist, callback):
       process = partial(self._processTracksData, callback)
+      print self.tracksURL(user, artist)
       async.get(self.tracksURL(user, artist), callback=process).send()
 
    """
@@ -86,6 +89,7 @@ class LastFMProxy:
    Last.fm JSON 'data'. additional args contain response flags.
    """
    def _processTracksData(self, report, data, **args):
+      print 'tracks:', data.content
       try:
          result = {}
          artistTracks = json.loads(data.content)['artisttracks']
