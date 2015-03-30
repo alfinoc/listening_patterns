@@ -16,10 +16,10 @@
                   <span>{{ plays }}</span> total play<template if="{{ plays > 1 }}">s</template>
                </template>
                <template if="{{ plays && last }}">
-                  |
+                 , last on
                </template>
                <template if="{{ last }}">
-                  last played on <span>{{ last }}</span>
+                  <span>{{ last | prettyDate }}</span>
                </template>
             </div>
          </h2>
@@ -121,6 +121,19 @@ Polymer('artist-info', {
 
    escape: function(str) {
       return escape(str);
+   },
+
+   prettyDate: function(utc) {
+      var currYear = new Date().getFullYear();
+      var given = new Date(utc * 1000);
+      var months = ["Jan.", "Feb.", "March", "April", "May", "June",
+                    "July", "August", "Sept.", "Oct.", "Nov.", "Dec."];
+      var year = given.getFullYear();
+      if (year == currYear)
+         year = '';
+      else
+         year = ', ' + year
+      return '' + months[given.getMonth()] + ' ' + given.getDate() + year;
    },
 
    updateChart: function(disabled) {
