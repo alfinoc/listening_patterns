@@ -10,8 +10,8 @@
       <div class="banner">
          <paper-input id="userinput" floatingLabel label="user" on-change="{{ logUser }}" spellcheck="false"></paper-input>
          <paper-tabs noink selected="0" id="typeselector" on-core-activate="{{ typeSelectionChanged }}">
-            <paper-tab>top artists</paper-tab>
-            <paper-tab>recent artists</paper-tab>
+            <paper-tab>top</paper-tab>
+            <paper-tab>recent</paper-tab>
          </paper-tabs>
       </div>
       <template if="{{ artists.length == 0 && user.length != 0 && !loading }}">
@@ -19,13 +19,13 @@
       </template>
       <core-collapse id="artists">
          <template repeat="{{ a in artists }}">
-            <artist-info mbid="{{ a.mbid }}" artist="{{ a.name }}" plays="{{ a.plays }}" user="{{ user }}">
+            <artist-info mbid="{{ a.mbid }}" artist="{{ a.name }}" last="{{ a.last }}" plays="{{ a.plays }}" user="{{ user }}">
                <svg class="chart_svg"></svg>
             </artist-info>
          </template>
       </core-collapse>
       <paper-progress indeterminate?="{{ loading }}"></paper-progress>
-      <core-ajax id="ajax" url="{{ host }}/artists?user={{ user }}"
+      <core-ajax id="ajax" url="{{ host }}/artists?user={{ user }}&type={{ type }}"
          handleAs="json" loading="{{ loading }}" on-core-response="{{ handleArtists }}"
       ></core-ajax>
    </template>
@@ -36,6 +36,7 @@ Polymer('user-info', {
       user: '',
       artists: [],
       loading: false,
+      max: 20,
       type: 'top'  // top | recent
    },
 
@@ -49,7 +50,7 @@ Polymer('user-info', {
 
    handleArtists: function(evt) {
       this.hideArtists();
-      this.artists = evt.detail.response.artists.slice(0, 20);
+      this.artists = evt.detail.response.artists.slice(0, this.max);
       this.async(function() {
          this.showArtists();
       })
@@ -57,9 +58,11 @@ Polymer('user-info', {
 
    typeSelectionChanged: function() {
       var old = this.type;
-      this.type = this.$.typeselector.selected ? 'top' : 'recent';
-      if (old != this.type);
-         this.userChanged();
+      this.async(function() {
+         this.type = this.$.typeselector.selected ? 'recent' : 'top';
+         if (old != this.type);
+            this.userChanged();
+      });
    },
 
    userChanged: function() {

@@ -29,7 +29,9 @@ paper-input::shadow paper-input-decorator /deep/ .unfocused-underline {
 }
 
 paper-tabs {
+  margin: auto;
   margin-bottom: 20px;
+  width: 70%;
 }
 
 .noartists {

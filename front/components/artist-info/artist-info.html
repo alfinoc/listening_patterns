@@ -13,7 +13,13 @@
             <div flex>{{ artist }}</div>
             <div class="playcount" self-center>
                <template if="{{ plays }}">
-               <span>{{ plays }}</span> total play<template if="{{ plays > 1 }}">s</template>
+                  <span>{{ plays }}</span> total play<template if="{{ plays > 1 }}">s</template>
+               </template>
+               <template if="{{ plays && last }}">
+                  |
+               </template>
+               <template if="{{ last }}">
+                  last played on <span>{{ last }}</span>
                </template>
             </div>
          </h2>
@@ -48,6 +54,7 @@ Polymer('artist-info', {
       mbid: '',
       user: '',
       plays: null,
+      last: null,
       loading: false
    },
 

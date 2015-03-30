@@ -17,3 +17,7 @@ body, html, h1, h2, h3 {
 * /deep/ rect {
    stroke: transparent !important;
 }
+
+* /deep/ .nvd3 rect[height="1"] {
+  display: none !important;
+}

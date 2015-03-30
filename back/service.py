@@ -45,6 +45,7 @@ class Service:
    def get_artists(self, request):
       try:
          user, = _getParams(request.args, ['user'])
+         recent = 'type' in request.args and request.args['type'] == 'recent'
       except ValueError as e:
          return BadRequest(str(e))
 
@@ -52,7 +53,7 @@ class Service:
          return Response(self.cache.get((user)))
 
       artists = ConditionalStorage()
-      self.lastfm.artists(user, artists.set)
+      self.lastfm.artists(user, artists.set, recent)
       result = _stringify({'artists': artists.get()}, True)
       if self.cache != None:
          self.cache.set((user), result)

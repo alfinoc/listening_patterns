@@ -47,10 +47,17 @@ class LastFMProxy:
 
    """
    calls 'callback' with a list of artist names sorted by play count by 'user'.
+   if 'recent', uses recent artists for the user; otherwise, uses top artists
    """
-   def artists(self, user, callback):
-      process = partial(self._processArtistsData, callback)
-      async.get(self.artistsURL(user), callback=process).send()
+   def artists(self, user, callback, recent=False):
+      if recent:
+         handler = self._processRecentArtistsData
+         url = self.recentArtistsURL
+      else:
+         handler = self._processTopArtistsData
+         url = self.topArtistsURL
+      process = partial(handler, callback)
+      async.get(url(user), callback=process).send()
 
    """
    calls 'callback' with a dict from album name to play count histogram for that
@@ -73,7 +80,7 @@ class LastFMProxy:
    calls 'report' with a list of album info dicts based on the Last.fm JSON 'data'.
    names are sorted by play count. additional args contain response flags.
    """
-   def _processArtistsData(self, report, data, **args):
+   def _processTopArtistsData(self, report, data, **args):
       try:
          artists = json.loads(data.content)['topartists']['artist']
          report(map(lambda a : {
@@ -84,12 +91,29 @@ class LastFMProxy:
       except:
          report([])
 
+   def _processRecentArtistsData(self, report, data, **args):
+      #try:
+      tracks = json.loads(data.content)['recenttracks']['track']
+      seen = set()
+      unique = []
+      for t in tracks:
+         name = t['artist']['#text']
+         if name not in seen:
+            unique.append({
+               'name': name,
+               'last': t['date']['uts'],
+               'mbid': t['artist']['mbid']
+            })
+            seen.add(name)
+      report(unique)
+      #except:
+      #   report([])
+
    """
    calls report with a map<album name, <date, play count>> based on artistTracks
    Last.fm JSON 'data'. additional args contain response flags.
    """
    def _processTracksData(self, report, data, **args):
-      print 'tracks:', data.content
       try:
          result = {}
          artistTracks = json.loads(data.content)['artisttracks']
@@ -126,13 +150,22 @@ class LastFMProxy:
    """
    returns the URL to fetch top artist data for given 'user'.
    """
-   def artistsURL(self, user):
+   def topArtistsURL(self, user):
       return self.last_fm_base_url + _paramSuffix({
-         'format': 'json',
-         'limit': '1000',
-         'method': 'user.gettopartists',
          'api_key': self.key,
-         'user': user
+         'method': 'user.gettopartists',
+         'user': user,
+         'format': 'json',
+         'limit': 1000
+      });
+
+   def recentArtistsURL(self, user):
+      return self.last_fm_base_url + _paramSuffix({
+         'api_key': self.key,
+         'method': 'user.getrecenttracks',
+         'user': user,
+         'format': 'json',
+         'limit': 200
       });
 
    """
@@ -140,13 +173,13 @@ class LastFMProxy:
    """
    def tracksURL(self, user, artist):
       return self.last_fm_base_url + _paramSuffix({
-         'format': 'json',
-         'limit': 1000,
-         'method': 'user.getartisttracks',
          'api_key': self.key,
+         'method': 'user.getartisttracks',
          'user': user,
-         'artist': artist
-      })
+         'artist': artist,
+         'format': 'json',
+         'limit': 1000
+      });
 
    """
    returns the URL to fetch lists of albums of a given 'type' (Album or EP) for the
