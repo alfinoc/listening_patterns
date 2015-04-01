@@ -66,7 +66,6 @@ class LastFMProxy:
    """
    def albumHistograms(self, user, artist, callback):
       process = partial(self._processTracksData, callback)
-      print self.tracksURL(user, artist)
       async.get(self.tracksURL(user, artist), callback=process).send()
 
    """
@@ -92,28 +91,29 @@ class LastFMProxy:
          report([])
 
    def _processRecentArtistsData(self, report, data, **args):
-      #try:
-      tracks = json.loads(data.content)['recenttracks']['track']
-      seen = set()
-      unique = []
-      for t in tracks:
-         name = t['artist']['#text']
-         if name not in seen:
-            unique.append({
-               'name': name,
-               'last': t['date']['uts'],
-               'mbid': t['artist']['mbid']
-            })
-            seen.add(name)
-      report(unique)
-      #except:
-      #   report([])
+      try:
+         tracks = json.loads(data.content)['recenttracks']['track']
+         seen = set()
+         unique = []
+         for t in tracks:
+            name = t['artist']['#text']
+            if name not in seen:
+               unique.append({
+                  'name': name,
+                  'last': t['date']['uts'],
+                  'mbid': t['artist']['mbid']
+               })
+               seen.add(name)
+         report(unique)
+      except:
+         report([])
 
    """
    calls report with a map<album name, <date, play count>> based on artistTracks
    Last.fm JSON 'data'. additional args contain response flags.
    """
    def _processTracksData(self, report, data, **args):
+      print data.content
       try:
          result = {}
          artistTracks = json.loads(data.content)['artisttracks']

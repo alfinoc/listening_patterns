@@ -51,13 +51,13 @@ class Service:
 
       cacheKey = (user, str(recent))
 
-      if self.cache != None and self.cache.contains((user)):
+      if not recent and self.cache != None and self.cache.contains((user)):
          return Response(self.cache.get(cacheKey))
 
       artists = ConditionalStorage()
       self.lastfm.artists(user, artists.set, recent)
       result = _stringify({'artists': artists.get()}, True)
-      if self.cache != None:
+      if not recent and self.cache != None:
          self.cache.set(cacheKey, result)
       return Response(result)
 

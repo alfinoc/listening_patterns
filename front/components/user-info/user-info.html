@@ -3,7 +3,6 @@
 <link rel="import" href="../standard/core-collapse/core-collapse.html">
 <link rel="import" href="../standard/paper-tabs/paper-tabs.html">
 
-
 <polymer-element name="user-info">
    <template>
       <link rel="stylesheet" type="text/css" href="user-info.css">
@@ -66,8 +65,10 @@ Polymer('user-info', {
    },
 
    userChanged: function() {
-      if (this.user)
+      if (this.user) {
          this.$.ajax.go();
+         this.hideArtists();
+      }
    },
 
    hideArtists: function() {
